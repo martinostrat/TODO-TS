@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Todo } from "../models/todo";
+import { error } from "console";
 
 const todos: Todo[] = [];
 
@@ -46,7 +47,29 @@ export const updateTodo = (req: Request, res: Response, next: NextFunction) => {
             message: 'Todo has been updated!',
             updatedTask: todos[todoIndex]
         })
-        
+
+    } catch(error) {
+        console.log(error);
+    }
+}
+
+
+// Deletes existing todo item with matchind id
+export const deleteTodo = (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const todoId = req.params.id;
+        const todoIndex = todos.findIndex(todo => todo.id === todoId);
+
+        if (todoIndex < 0) {
+            throw new Error('Could not find a todo with such ID')
+        }
+
+        todos.splice(todoIndex, 1);
+
+        res.status(201).json({
+            message: 'Todo has been deleted!'
+        });
+
     } catch(error) {
         console.log(error);
     }
